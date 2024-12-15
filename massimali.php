@@ -31,36 +31,54 @@ if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
 <body>
   <div class="container">
     <h1>CaliTracker - Massimali</h1>
-      <a class="backHomepage" href="/homepage.php">Torna alla homepage</a>
-    <table>
-      <thead>
-        <tr>
-          <th>Descrizione</th>
-          <th>Max</th>
-          <th>Azioni</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php
-          while ($fetch = $stmt->fetch()) {
-            $id = $fetch['id'];
-            $descrizione = $fetch['descrizione'];
-            $max = $fetch['max'];
+    <a class="backHomepage" href="/homepage.php">Torna alla homepage</a>
+    <div class="interactive-container">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Descrizione</th>
+              <th>Max</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+              while ($fetch = $stmt->fetch()) {
+                $id = $fetch['id'];
+                $descrizione = $fetch['descrizione'];
+                $max = $fetch['max'];
+            ?>
+            <tr class="border-bottom">
+              <td><?php echo htmlspecialchars($fetch['descrizione']); ?></td>
+              <td><?php echo htmlspecialchars($fetch['max']); ?></td>
+              <td>
+              <a href="javascript:void(0);" class="btn-edit" onclick="confirmEdit(<?php echo $id; ?>, '<?php echo addslashes($fetch['descrizione']); ?>', '<?php echo $fetch['max']; ?>')">✏️</a>
+                <a href="javascript:void(0);" class="btn-remove" onclick="confirmDelete(<?php echo $fetch['id']; ?>)">❌</a>
+              </td>
+            </tr>
+            <?php
+              }
+            ?>
+          </tbody>
+        </table>
+      </div>
 
-        ?>
-        <tr class="border-bottom">
-          <td><?php echo htmlspecialchars($fetch['descrizione']); ?></td>
-          <td><?php echo htmlspecialchars($fetch['max']); ?></td>
-          <td>
-          <a href="javascript:void(0);" class="btn-edit" onclick="confirmEdit(<?php echo $id; ?>, '<?php echo addslashes($fetch['descrizione']); ?>', '<?php echo $fetch['max']; ?>')">✏️</a>
-            <a href="javascript:void(0);" class="btn-remove" onclick="confirmDelete(<?php echo $fetch['id']; ?>)">❌</a>
-          </td>
-        </tr>
-        <?php
-          }
-        ?>
-      </tbody>
-    </table>
+      <!-- Modulo per aggiungere una Task -->
+      <div class="add-task-container">
+        <h2>Aggiungi un esercizio</h2>
+
+        <?php if (isset($_GET['error'])) { ?>
+          <p class="error"><?php echo $_GET['error']; ?></p>
+        <?php } ?>
+
+        <form action="api/add_task.php" method="post">
+          <input type="text" id="descrizione-add" name="descrizione" placeholder="Descrizione" required>
+          <input type="text" id="max-add" name="max" placeholder="Massimali">
+          <button type="submit">Conferma</button>
+        </form>
+      </div>
+    </div>
   </div>
 
   <!-- Modal di conferma di eliminazione-->
